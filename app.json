@@ -1,0 +1,22 @@
+
+{
+  "name": "Namer from Flask VueJs Template",
+  "description": "",
+  "repository": "https://github.com/cyberbolt/namer",
+  "logo": "",
+  "keywords": ["flask", "vue", "sandbox"],
+  "env": {
+    "FLASK_ENV": {
+      "description": "Flask Enviroment",
+      "value": "production"
+    },
+    "SECRET": {
+      "description": "Flask Secret Key",
+      "value": "YourKeyHere"
+    }
+   },
+  "addons": [
+   ],
+  "buildpacks": [
+  ]
+}
