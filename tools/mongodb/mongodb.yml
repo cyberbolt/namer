@@ -1,0 +1,13 @@
+version: '2.2'
+
+networks:
+  communication:
+    driver: bridge
+
+services:
+  mongodb:
+    image: 'bitnami/mongodb:latest'
+    networks:
+      - communication
+    ports:
+      - "27017:27017"

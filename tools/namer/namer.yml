@@ -1,0 +1,13 @@
+version: '2.2'
+
+networks:
+  communication:
+    driver: bridge
+
+services:
+  mongodb:
+    image: 'myimage' # dummy
+    networks:
+      - communication
+    ports:
+      - "80:5000"
