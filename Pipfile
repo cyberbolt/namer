@@ -1,20 +1,25 @@
 [[source]]
-url = "https://pypi.python.org/simple"
-verify_ssl = true
 name = "pypi"
-
-[packages]
-gunicorn = "==19.9.0"
-flask-restplus = "*"
-python-dotenv = "*"
-flask = "==1.0.2"
-flask-pymongo = "*"
+url = "https://pypi.org/simple"
+verify_ssl = true
 
 [dev-packages]
-pytest = "*"
 bumpversion = "*"
-pytest-sugar = "*"
-pytest-cov = "*"
+
+[packages]
+Click="==7.0"
+Flask="==1.0.2"
+flask-mongoengine="==0.9.5"
+Flask-Script="==2.0.6"
+Flask-WTF="==0.14.2"
+itsdangerous="==1.1.0"
+Jinja2="==2.10.1"
+MarkupSafe="==1.1.1"
+mongoengine="==0.17.0"
+pymongo="==3.8.0"
+six="==1.12.0"
+Werkzeug="==0.15.2"
+WTForms="==2.2.1"
 
 [requires]
 python_version = "3.6"

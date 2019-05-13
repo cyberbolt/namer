@@ -1,11 +1,4 @@
-"""
-Global Flask Application Setting
-
-See `.flaskenv` for default settings.
- """
-
 import os
-from app import app
 
 
 class Config(object):
@@ -13,14 +6,14 @@ class Config(object):
     FLASK_ENV = os.getenv('FLASK_ENV', 'production')
     # Set FLASK_SECRET on your production Environment
     SECRET_KEY = os.getenv('FLASK_SECRET', 'Secret')
-    DB = os.getenv('DB', 'mongodb://mongodb:27017/namer')
-    APP_DIR = os.path.dirname(__file__)
-    ROOT_DIR = os.path.dirname(APP_DIR)
-    DIST_DIR = os.path.join(ROOT_DIR, 'dist')
 
-    if not os.path.exists(DIST_DIR):
-        raise Exception(
-            'DIST_DIR not found: {}'.format(DIST_DIR))
+    __DB = os.getenv('M_DB', 'namer')
+    __HOST = os.getenv('M_HOST', 'localhost')
+    __PORT = os.getenv('M_PORT', '27017')
 
-
-app.config.from_object('app.config.Config')
+    MONGODB_SETTINGS = {
+        'db': __DB,
+        'host': __HOST,
+        'port': int(__PORT),
+        'alias': 'default'
+    }

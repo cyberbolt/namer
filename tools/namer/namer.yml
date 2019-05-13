@@ -1,11 +1,11 @@
-version: '2.2'
+version: '3.7'
 
 networks:
   communication:
     driver: bridge
 
 services:
-  mongodb:
+  namer:
     image: 'myimage' # dummy
     networks:
       - communication
