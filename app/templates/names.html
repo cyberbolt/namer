@@ -1,0 +1,28 @@
+{% extends "main.html" %}
+{% import "_forms.html" as forms %}
+
+{% block content %}
+    <hr>
+    <h2>Add name</h2>
+    <form action="." method="post">
+      {{ forms.render(form) }}
+    <hr>
+      <div class="actions">
+        <input type="submit" class="btn primary" value="Add">
+      </div>
+    </form>
+    <hr>
+
+    {% if names %}
+    <ul>
+        {% for name in names %}
+            <li>{{ name.name }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if not names %}
+        <h1>There are no any name in list. You may add yours</h1>
+    {% endif %}
+
+
+{% endblock %}
