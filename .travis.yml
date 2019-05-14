@@ -1,0 +1,16 @@
+sudo: true
+dist: trusty
+
+jobs:
+  include:
+    - stage: run tests
+      script: python -m unittest
+    - stage: build docker image
+      script:
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker build -t namer-demo .
+      - docker images
+      - docker tag namer-demo $DOCKER_USERNAME/namer
+      - docker push $DOCKER_USERNAME/namer
+    - stage: finalize
+      script: docker rmi -f namer-demo

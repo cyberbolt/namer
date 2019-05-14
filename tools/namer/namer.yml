@@ -6,8 +6,8 @@ networks:
 
 services:
   namer:
-    image: 'myimage' # dummy
+    image: 'bzamilov/namer:latest'
     networks:
       - communication
     ports:
-      - "80:5000"
+      - "5000:5000"
