@@ -1,3 +1,2 @@
 #!/bin/sh
-pipenv shell
-python manage.py runserver
+pipenv run python manage.py runserver
