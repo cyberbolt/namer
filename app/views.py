@@ -7,7 +7,8 @@ names = Blueprint('names', __name__, template_folder='templates')
 
 
 class Names(MethodView):
-    form = model_form(Name, exclude=['created_at'])
+    form = model_form(Name,
+                      exclude=['created_at'])
 
     def get(self):
         names = Name.objects.limit(5)

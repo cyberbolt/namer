@@ -2,27 +2,21 @@
 {% import "_forms.html" as forms %}
 
 {% block content %}
-    <hr>
-    <h2>Add name</h2>
     <form action="." method="post">
-      {{ forms.render(form) }}
-    <hr>
-      <div class="actions">
-        <input type="submit" class="btn primary" value="Add">
-      </div>
+        <div>
+            {{ forms.render(form) }}
+            <input type="submit" class="btn btn-outline-primary btn-sm" value="Add">
+        </div>
     </form>
-    <hr>
 
     {% if names %}
-    <ul>
+    <ul class="list-group">
         {% for name in names %}
-            <li>{{ name.name }}</li>
+            <li class="list-group-item no-border">{{ name.name }}</li>
         {% endfor %}
     </ul>
     {% endif %}
     {% if not names %}
-        <h1>There are no any name in list. You may add yours</h1>
+        <div class="suggestion">There are no any name in list. You may add some</div>
     {% endif %}
-
-
 {% endblock %}
