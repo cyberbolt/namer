@@ -10,4 +10,4 @@ COPY test test
 COPY tools tools
 COPY manage.py ./
 ENTRYPOINT ["pipenv", "run", "python", "manage.py"]
-CMD["runserver"]
+CMD ["runserver"]
