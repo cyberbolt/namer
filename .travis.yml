@@ -3,20 +3,35 @@ dist: xenial
 language: python
 python:
   - "3.6"
-install:
-  - pip install pipenv
-  - pipenv install
+
+branches:
+  only:
+    - master
+
+env:
+  - TF_INPUT=false
+
+# Install terraform
+before_install:
+  - curl -sLo /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip
+  - unzip /tmp/terraform.zip -d /tmp
+  - mkdir ~/bin
+  - mv /tmp/terraform ~/bin
+  - export PATH="~/bin:$PATH"
 
 jobs:
   include:
-    - stage: run tests
-      script: pipenv run python -m unittest
     - stage: build docker image
       script:
       - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
       - docker build -t namer-demo .
       - docker images
       - docker tag namer-demo $DOCKER_USERNAME/namer
-      - docker push $DOCKER_USERNAME/namer
+    - stage: run tests
+      script: docker run -it $DOCKER_USERNAME/namer autotests
+    - stage: upload image
+      script:
+      - docker push $DOCKER_USERNAME/namer  
     - stage: finalize
-      script: docker rmi -f namer-demo
+      script: 
+      - docker rmi -f namer-demo
