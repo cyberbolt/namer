@@ -6,9 +6,11 @@ RUN pipenv install
 
 FROM base as app
 COPY app app
-COPY test test
 COPY tools tools
 COPY manage.py ./
+
+FROM app as test
+COPY test test
 RUN ["pipenv", "run", "python", "manage.py", "autotests"]
 
 FROM app
