@@ -27,11 +27,7 @@ jobs:
       - docker build -t namer-demo .
       - docker images
       - docker tag namer-demo $DOCKER_USERNAME/namer
-    - stage: run tests
-      script: docker run -it $DOCKER_USERNAME/namer autotests
-    - stage: upload image
-      script:
-      - docker push $DOCKER_USERNAME/namer  
+      - docker push $DOCKER_USERNAME/namer
     - stage: finalize
       script: 
       - docker rmi -f namer-demo
