@@ -4,6 +4,9 @@ language: python
 python:
   - "3.6"
 
+services:
+- docker
+
 branches:
   only:
     - master
@@ -28,6 +31,7 @@ jobs:
       - docker images
       - docker tag namer-demo $DOCKER_USERNAME/namer
       - docker push $DOCKER_USERNAME/namer
+      - 
     - stage: finalize
       script: 
       - docker rmi -f namer-demo

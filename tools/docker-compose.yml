@@ -1,0 +1,38 @@
+version: '3.7'
+
+networks:
+  communication:
+    driver: bridge
+
+services:
+  namer:
+    image: 'bzamilov/namer:latest'
+    container_name: namer-app
+    restart: always
+    command: runserver
+    depends_on:
+      - mongodb
+    networks:
+      - communication
+    ports:
+      - "5000:5000"
+  
+  mongodb:
+    environment:
+      - M_DB=DB
+      - M_HOST=127.0.0.1
+      - M_PORT=27017
+    image: 'bitnami/mongodb:latest'
+    container_name: namer-db
+    restart: always
+    networks:
+      - communication
+    ports:
+      - "127.0.0.1:27017:27017"
+    healthcheck:
+      #test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet 1
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet | echo $?
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
