@@ -1,8 +1,3 @@
-provider "aws" {
-  profile    = "default"
-  region     = var.region
-}
-
 resource "aws_instance" "namer" {
   ami           = "ami-0ac05733838eabc06"
   instance_type = "t2.micro"
