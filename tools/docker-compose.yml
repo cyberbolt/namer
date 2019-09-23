@@ -4,7 +4,7 @@ services:
   namer:
     environment:
       - M_DB=DB
-      - M_HOST=${M_HOST}
+      - M_HOST=${M_HOST:-127.0.0.1}
       - M_PORT=27017
     image: 'bzamilov/namer:latest'
     container_name: namer-app
@@ -20,11 +20,4 @@ services:
     container_name: namer-db
     restart: always
     ports:
-      - "27017:27017"
-    # healthcheck:
-    #   test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet 0
-    #   #test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet | echo $?
-    #   interval: 10s
-    #   timeout: 10s
-    #   retries: 5
-    #   start_period: 40s
+      - "${M_HOST:-127.0.0.1}:27017:27017"
