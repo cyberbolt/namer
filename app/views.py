@@ -5,18 +5,17 @@ from app.models import Name
 
 names = Blueprint('names', __name__, template_folder='templates')
 
-
 class Names(MethodView):
-    form = model_form(Name,
-                      exclude=['created_at'])
+    NamesForm = model_form(Name,
+                           exclude=['created_at'])
 
     def get(self):
         names = Name.objects.limit(5)
-        form = self.form(request.form)
+        form = self.NamesForm(request.form)
         return render_template('names.html', names=names, form=form)
 
     def post(self):
-        form = self.form(request.form)
+        form = self.NamesForm(request.form)
 
         if form.validate():
             name = Name()

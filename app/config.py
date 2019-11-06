@@ -6,6 +6,7 @@ class Config(object):
     FLASK_ENV = os.getenv('FLASK_ENV', 'production')
     # Set FLASK_SECRET on your production Environment
     SECRET_KEY = os.getenv('FLASK_SECRET', 'Secret')
+    WTF_CSRF_ENABLED = False
 
     __DB = os.getenv('M_DB', 'namer')
     __HOST = os.getenv('M_HOST', 'localhost')
