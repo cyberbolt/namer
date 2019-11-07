@@ -17,7 +17,11 @@ manager.add_command('runserver', Server(
     host='0.0.0.0')
 )
 manager.add_command("database", database_manager)
+
+# python manage.py autotests
 manager.add_command('autotests', Autotest())
+
+# python manage.py integrationtests --url http://test-server.my:5555
 manager.add_command('integrationtests', Integrationtest())
 
 

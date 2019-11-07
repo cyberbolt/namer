@@ -1,4 +1,4 @@
-from flask_script import Command
+from flask_script import Command, Option
 import requests
 from time import time
 
@@ -10,8 +10,13 @@ class Integrationtest(Command):
         self.url = url
         super().__init__()
 
-    def run(self):
-        get_response = requests.get(self.url)
+    def get_options(self):
+        return [
+            Option('-u', '--url', dest='url', default=self.url),
+        ]
+
+    def run(self, url):
+        get_response = requests.get(url)
         if get_response.status_code != 200:
             raise Exception(f"Error getting main page {get_response.status_code}")
 
@@ -22,12 +27,14 @@ class Integrationtest(Command):
         data = {
             "name": new_name
         }
-        post_response = requests.post(self.url,
+        post_response = requests.post(url,
                                       headers=headers,
                                       data=data)
         if post_response.status_code != 302:
             raise Exception(f"Error posting form data {get_response.status_code}")
 
-        updated_request = requests.get(self.url)
+        updated_request = requests.get(url)
         if new_name not in updated_request.text:
             raise Exception(f"Cannot find name {new_name} in the names list")
+
+        print("All integration tests are passed")
