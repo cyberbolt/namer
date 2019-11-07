@@ -26,18 +26,17 @@ jobs:
   include:
     - stage: build docker image
       script:
-      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-      - docker build -t namer-demo .
-      - docker images
-      - docker tag namer-demo $DOCKER_USERNAME/namer
-      - docker push $DOCKER_USERNAME/namer
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - docker build -t namer-demo .
+        - docker images
+        - docker tag namer-demo $DOCKER_USERNAME/namer
+        - docker push $DOCKER_USERNAME/namer
     - stage: integration testing
       script:
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - docker pull $DOCKER_USERNAME/namer
         - IP=$(hostname -I | awk '{ print $1 }')
         - URL=$IP:5000
         - M_HOST=$IP docker-compose up -d
-        - M_HOST=$IP docker run namer-demo "integrationtests -u ${URL}"
+        - M_HOST=$IP docker run $DOCKER_USERNAME/namer "integrationtests -u ${URL}"
         - docker-compose down
-    - stage: finalize
-      script: 
-      - docker rmi -f namer-demo
