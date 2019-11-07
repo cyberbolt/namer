@@ -31,7 +31,13 @@ jobs:
       - docker images
       - docker tag namer-demo $DOCKER_USERNAME/namer
       - docker push $DOCKER_USERNAME/namer
-      - 
+    - stage: integration testing
+      script:
+        - IP=$(hostname -I | awk '{ print $1 }')
+        - URL=$IP:5000
+        - M_HOST=$IP docker-compose up -d
+        - M_HOST=$IP docker run namer-demo "integrationtests -u ${URL}"
+        - docker-compose down
     - stage: finalize
       script: 
       - docker rmi -f namer-demo

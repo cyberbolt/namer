@@ -14,5 +14,6 @@ COPY test test
 RUN ["pipenv", "run", "python", "manage.py", "autotests"]
 
 FROM app
+COPY test test
 ENTRYPOINT ["pipenv", "run", "python", "manage.py"]
 CMD ["runserver"]
