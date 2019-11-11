@@ -36,7 +36,7 @@ jobs:
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
         - docker pull $DOCKER_USERNAME/namer
         - IP=$(hostname -I | awk '{ print $1 }')
-        - URL=$IP:5000
+        - URL=http://$IP:5000
         - M_HOST=$IP docker-compose -f tools/docker-compose.yml up -d
         - M_HOST=$IP docker run -t $DOCKER_USERNAME/namer integrationtests -u $URL
-        - docker-compose down
+        - docker-compose -f tools/docker-compose.yml down
