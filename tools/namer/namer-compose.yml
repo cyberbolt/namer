@@ -1,13 +1,20 @@
 version: '3.7'
 
-networks:
-  communication:
-    driver: bridge
-
 services:
   namer:
+    environment:
+      - M_DB=DB
+      - M_HOST=${M_HOST:-127.0.0.1}
+      - M_PORT=27017
     image: 'bzamilov/namer:latest'
-    networks:
-      - communication
+    container_name: namer-app
+    restart: always
+    command: runserver
     ports:
       - "5000:5000"
+    healthcheck:
+      test: curl -f -X GET localhost:5000
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
