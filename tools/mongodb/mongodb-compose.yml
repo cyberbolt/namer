@@ -4,9 +4,13 @@ services:
   mongodb:
     environment:
       - M_HOST=${M_HOST:-127.0.0.1}
-      - M_PORT=27017
+      - MONGODB_USERNAME=$M_USERNAME
+      - MONGODB_PASSWORD=$M_PASSWORD
+      - MONGODB_DATABASE=${m_DB:-DB}
     image: 'bitnami/mongodb:latest'
     container_name: namer-db
     restart: always
     ports:
-      - "${M_HOST:-127.0.0.1}:27017:27017"
+      - "${M_HOST:-127.0.0.1}:${M_PORT:-27017}:${M_PORT:-27017}"
+    volumes:
+      - ~/docker-data/mongodb:/bitnami

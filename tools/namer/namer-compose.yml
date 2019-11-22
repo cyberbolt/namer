@@ -5,7 +5,9 @@ services:
     environment:
       - M_DB=DB
       - M_HOST=${M_HOST:-127.0.0.1}
-      - M_PORT=27017
+      - M_PORT=${M_PORT:-27017}
+      - M_USERNAME=$M_USERNAME
+      - M_PASSWORD=$M_PASSWORD
     image: 'bzamilov/namer:latest'
     container_name: namer-app
     restart: always

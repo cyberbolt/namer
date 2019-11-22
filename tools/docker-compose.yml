@@ -3,9 +3,11 @@ version: '3.7'
 services:
   namer:
     environment:
-      - M_DB=DB
+      - M_DB=${m_DB:-DB}
       - M_HOST=${M_HOST:-127.0.0.1}
-      - M_PORT=27017
+      - M_PORT=${M_PORT:-27017}
+      - M_USERNAME=$M_USERNAME
+      - M_PASSWORD=$M_PASSWORD
     image: 'bzamilov/namer:latest'
     container_name: namer-app
     restart: always
@@ -18,6 +20,12 @@ services:
   mongodb:
     image: 'bitnami/mongodb:latest'
     container_name: namer-db
+    environment:
+      - MONGODB_USERNAME=$M_USERNAME
+      - MONGODB_PASSWORD=$M_PASSWORD
+      - MONGODB_DATABASE=${m_DB:-DB}
     restart: always
     ports:
-      - "${M_HOST:-127.0.0.1}:27017:27017"
+      - "${M_HOST:-127.0.0.1}:${M_PORT:-27017}:${M_PORT:-27017}"
+    volumes:
+      - ~/docker-data/mongodb:/bitnami
