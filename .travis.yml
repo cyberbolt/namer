@@ -41,3 +41,8 @@ jobs:
         - M_HOST=$IP M_USERNAME=$M_USER M_PASSWORD=$M_PASSWORD docker-compose -f tools/docker-compose.yml up -d
         - M_HOST=$IP docker run -t $DOCKER_USERNAME/namer integrationtests -u $URL
         - docker-compose -f tools/docker-compose.yml down
+    - stage: deploy
+      script:
+        - cd infrastructure
+        - terraform init
+        - terraform apply
