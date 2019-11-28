@@ -9,6 +9,26 @@ resource "aws_security_group" "port_22_ingress_globally_accessible" {
     }
 }
 
+resource "aws_security_group" "allow_http_traffic" {
+    name = "allow_http_traffic"
+
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    self = true
+  }
+
+  egress {
+    from_port = "0"
+    to_port = "0"
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    self = true
+  }
+}
+
 resource "aws_instance" "namer" {
   ami           = "ami-0ac05733838eabc06"
   instance_type = "t2.micro"
@@ -24,6 +44,7 @@ resource "aws_instance" "mongo" {
   key_name = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [
     "${aws_security_group.port_22_ingress_globally_accessible.id}",
+    "${aws_security_group.allow_http_traffic.id}"
   ]
 
   connection {
@@ -45,11 +66,10 @@ resource "aws_instance" "mongo" {
       "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
       "sudo add-apt-repository  \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"",
       "sudo apt-get update",
-      "sudo apt-get install docker-ce docker-ce-cli containerd.io",
-      "curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose", 
-      "chmod +x /usr/local/bin/docker-compose",
-      "sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose",
-      "docker-compose --version"
+      "sudo apt-get install -y docker-ce docker-ce-cli containerd.io",
+      "curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o ~/docker-compose", 
+      "chmod +x ~/docker-compose",
+      "~/docker-compose --version"
     ]
   }
 }
