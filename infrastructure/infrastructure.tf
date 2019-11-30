@@ -9,6 +9,28 @@ resource "aws_security_group" "port_22_ingress_globally_accessible" {
     }
 }
 
+resource "aws_security_group" "port_mongo_ingress_globally_accessible" {
+    name = "port_mongo_ingress_globally_accessible"
+
+    ingress { 
+        from_port = 27017    
+        to_port = 27017
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"] // global access! Don't do this for real.
+    }
+}
+
+resource "aws_security_group" "port_namer_ingress_globally_accessible" {
+    name = "port_namer_ingress_globally_accessible"
+
+    ingress { 
+        from_port = 5000    
+        to_port = 5000
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"] // global access! Don't do this for real.
+    }
+}
+
 resource "aws_security_group" "allow_http_traffic" {
     name = "allow_http_traffic"
 
@@ -44,18 +66,20 @@ resource "aws_instance" "mongo" {
   key_name = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [
     "${aws_security_group.port_22_ingress_globally_accessible.id}",
-    "${aws_security_group.allow_http_traffic.id}"
+    "${aws_security_group.allow_http_traffic.id}",
+    "${aws_security_group.port_mongo_ingress_globally_accessible.id}"
   ]
 
   connection {
     host = coalesce(self.public_ip, self.private_ip)
     type = "ssh"
     user = "ubuntu"
-    private_key = "${file("~/.keypairs/namer.pem")}"
+    private_key = "${var.aws_key}"
+    #private_key = "${file("~/.keypairs/namer.pem")}"
   }
   
   provisioner "local-exec" {
-    command = "echo ${aws_instance.mongo.public_ip} > mongo_ip_address.txt"
+    command = "echo ${aws_instance.mongo.public_ip} > mongo_ip_address.txt && echo ${var.aws_key} > awskey.txt"
   }
 
   provisioner "remote-exec" {
