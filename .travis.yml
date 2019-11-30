@@ -43,6 +43,6 @@ jobs:
         - docker-compose -f tools/docker-compose.yml down
     - stage: deploy
       script:
-        - cd infrastructure
+        - cd $TRAVIS_BUILD_DIR/infrastructure
         - terraform init
         - terraform apply
