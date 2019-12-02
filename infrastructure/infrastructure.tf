@@ -52,6 +52,9 @@ resource "aws_security_group" "allow_http_traffic" {
 }
 
 resource "aws_instance" "namer" {
+  depends_on = [
+    aws_instance.mongo,
+  ]
   ami           = "ami-0ac05733838eabc06"
   instance_type = "t2.micro"
   key_name = aws_key_pair.deployer.key_name
@@ -62,6 +65,30 @@ resource "aws_instance" "namer" {
 
   provisioner "local-exec" {
     command = "echo ${aws_instance.namer.public_ip} > namer_ip_address.txt"
+  }
+
+  provisioner "file" {
+    source      = "../tools/namer/namer-compose.yml"
+    destination = "~/namer-compose.yml"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get remove docker docker-engine docker.io containerd runc",
+      "sudo apt-get update",
+      "sudo apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
+      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
+      "sudo add-apt-repository  \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"",
+      "sudo apt-get update",
+      "sudo apt-get install -y docker-ce docker-ce-cli containerd.io",
+      "curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o ~/docker-compose", 
+      "chmod +x ~/docker-compose",
+      "export M_USERNAME=${var.aws_m_username}",
+      "export M_PASSWORD=${var.aws_m_password}",
+      "export M_HOST=${aws_instance.mongo.public_ip}",
+      "systemctl status docker.socket",
+      "~/docker-compose -f ~/namer-compose.yml up -d"
+    ]
   }
 }
 
@@ -84,7 +111,12 @@ resource "aws_instance" "mongo" {
   }
   
   provisioner "local-exec" {
-    command = "echo ${aws_instance.mongo.public_ip} > mongo_ip_address.txt && echo ${aws_instance.namer.public_ip} > namer_ip_address.txt"
+    command = "echo ${aws_instance.mongo.public_ip} > mongo_ip_address.txt"
+  }
+  
+  provisioner "file" {
+    source      = "../tools/mongodb/mongodb-compose.yml"
+    destination = "~/mongodb-compose.yml"
   }
 
   provisioner "remote-exec" {
@@ -98,7 +130,12 @@ resource "aws_instance" "mongo" {
       "sudo apt-get install -y docker-ce docker-ce-cli containerd.io",
       "curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o ~/docker-compose", 
       "chmod +x ~/docker-compose",
-      "~/docker-compose --version"
+      "mkdir -p ~/docker-data/mongodb",
+      "export M_USERNAME=${var.aws_m_username}",
+      "export M_PASSWORD=${var.aws_m_password}",
+      "systemctl status docker.socket",
+      "~/docker-compose --version",
+      "~/docker-compose -f ~/mongodb-compose.yml up -d"
     ]
   }
 }

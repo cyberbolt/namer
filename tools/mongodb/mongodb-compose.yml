@@ -10,7 +10,6 @@ services:
 
   mongodb:
     environment:
-      - M_HOST=${M_HOST:-127.0.0.1}
       - MONGODB_USERNAME=$M_USERNAME
       - MONGODB_PASSWORD=$M_PASSWORD
       - MONGODB_DATABASE=${M_DB:-DB}

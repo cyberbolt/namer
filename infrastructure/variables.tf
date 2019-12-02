@@ -2,6 +2,8 @@ variable "aws_region" {}
 variable "aws_key" {}
 variable "aws_access_key_id" {}
 variable "aws_secret_access_key" {}
+variable "aws_m_username" {}
+variable "aws_m_password" {}
 variable "aws_zones" {
  type        = "list"
  description = "List of availability zones to use"
