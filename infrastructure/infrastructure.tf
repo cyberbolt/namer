@@ -54,6 +54,11 @@ resource "aws_security_group" "allow_http_traffic" {
 resource "aws_instance" "namer" {
   ami           = "ami-0ac05733838eabc06"
   instance_type = "t2.micro"
+  key_name = aws_key_pair.deployer.key_name
+  vpc_security_group_ids = [
+    "${aws_security_group.port_22_ingress_globally_accessible.id}",
+    "${aws_security_group.port_namer_ingress_globally_accessible.id}"
+  ]
 
   provisioner "local-exec" {
     command = "echo ${aws_instance.namer.public_ip} > namer_ip_address.txt"
@@ -79,7 +84,7 @@ resource "aws_instance" "mongo" {
   }
   
   provisioner "local-exec" {
-    command = "echo ${aws_instance.mongo.public_ip} > mongo_ip_address.txt && echo ${var.aws_key} > awskey.txt"
+    command = "echo ${aws_instance.mongo.public_ip} > mongo_ip_address.txt && echo ${aws_instance.namer.public_ip} > namer_ip_address.txt"
   }
 
   provisioner "remote-exec" {
