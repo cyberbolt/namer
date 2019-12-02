@@ -52,15 +52,16 @@ resource "aws_security_group" "allow_http_traffic" {
 }
 
 resource "aws_instance" "namer" {
-  depends_on = [
-    aws_instance.mongo,
-  ]
   ami           = "ami-0ac05733838eabc06"
   instance_type = "t2.micro"
   key_name = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [
     "${aws_security_group.port_22_ingress_globally_accessible.id}",
     "${aws_security_group.port_namer_ingress_globally_accessible.id}"
+  ]
+
+  depends_on = [
+    aws_instance.mongo,
   ]
 
   provisioner "local-exec" {
@@ -86,8 +87,9 @@ resource "aws_instance" "namer" {
       "export M_USERNAME=${var.aws_m_username}",
       "export M_PASSWORD=${var.aws_m_password}",
       "export M_HOST=${aws_instance.mongo.public_ip}",
-      "systemctl status docker.socket",
-      "~/docker-compose -f ~/namer-compose.yml up -d"
+      "systemctl status docker.socket > docker_namer_status",
+      "sudo ~/docker-compose --version",
+      "sudo ~/docker-compose -f ~/namer-compose.yml up -d"
     ]
   }
 }
@@ -133,14 +135,14 @@ resource "aws_instance" "mongo" {
       "mkdir -p ~/docker-data/mongodb",
       "export M_USERNAME=${var.aws_m_username}",
       "export M_PASSWORD=${var.aws_m_password}",
-      "systemctl status docker.socket",
-      "~/docker-compose --version",
-      "~/docker-compose -f ~/mongodb-compose.yml up -d"
+      "systemctl status docker.socket > docker_mongodb_status",
+      "sudo ~/docker-compose --version",
+      "sudo ~/docker-compose -f ~/mongodb-compose.yml up -d"
     ]
   }
 }
 
 resource "aws_key_pair" "deployer" {
   key_name   = "deploy"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCYlJTEj0iZbHComred1mP9z+cSHOC6uS/UFwAwu9aewmv0u2Tb3r4J94Tuz7gvu/oMmlQFDi7s0CIIXVi6de6YLtYchsXG+58S8tOD8Untm/S583jIq0cUmoe+e0TijwLUI2ZXH2VyPEZatkH3LIbj3XwG8wOuzPbglq1FTYnP2kF/pVE0yRnNPGzy5LtvhfQPK07lay4wGMIUy4+WlEZhpLX5V0TmEmqzfIu+/nj9coyk0LhlLUuZDltrNhSir3rE6D4HwWBmF0uyggJwYvX8PizyDevjEvWv6NTD1HvwtN3xkIQmAV7ww/d0dOBRYC1NJ4F9ocNXLiIbqFmRTSth"
+  public_key = "${var.aws_pub_key}"
 }
