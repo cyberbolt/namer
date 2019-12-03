@@ -44,7 +44,7 @@ jobs:
     - stage: deploy
       script:
         - cd $TRAVIS_BUILD_DIR/infrastructure
-        - export TF_VAR_m_username=$M_USER
-        - export TF_VAR_m_password=$M_PASSWORD
+        - export TF_VAR_aws_m_username=$M_USER
+        - export TF_VAR_aws_m_password=$M_PASSWORD
         - terraform init
         - terraform apply -auto-approve
